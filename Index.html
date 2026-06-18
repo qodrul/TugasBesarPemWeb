@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeCleanIt | Jasa Bersih Profesional & Terpercaya Mataram</title>
+    
+    <!-- Google Fonts: Syne & DM Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Syne:wght@500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        darkblue: '#0F5A96',   // Untuk teks judul agar kontras dan terbaca
+                        skyblue: '#74B4D9',    // Warna Dominan Baru
+                        lightsky: '#E0F2FE',   // Sky blue sangat muda
+                        neutralbg: '#F0F9FF',  // Latar belakang netral kebiruan
+                        whatsapp: '#25D366'    // Hijau WA
+                    },
+                    fontFamily: {
+                        sans: ['DM Sans', 'sans-serif'],
+                        heading: ['Syne', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Carousel Animation */
+        .carousel-item {
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+            position: absolute;
+            inset: 0;
+        }
+        .carousel-item.active {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="font-sans bg-neutralbg text-gray-800 antialiased">
+
+    <!-- CONFIGURATION SCRIPT -->
+    <script>
+        const WA_NUMBER = "6281234567890"; 
+        
+        function openWhatsApp(paket = "") {
+            // Karena sistem sudah dinamis, kita redirect pemesanan ke halaman Login/Register
+            window.location.href = 'auth.php';
+        }
+
+        // Hero Carousel Logic
+        document.addEventListener("DOMContentLoaded", () => {
+            const items = document.querySelectorAll('.carousel-item');
+            let currentIndex = 0;
+
+            function nextSlide() {
+                items[currentIndex].classList.remove('active');
+                currentIndex = (currentIndex + 1) % items.length;
+                items[currentIndex].classList.add('active');
+            }
+
+            // Ganti gambar setiap 4 detik
+            setInterval(nextSlide, 4000);
+        });
+    </script>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full bg-white/90 backdrop-blur-md shadow-sm z-50">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <i class="fa-solid fa-sparkles text-skyblue text-2xl mr-2"></i>
+                    <span class="font-heading font-bold text-2xl text-darkblue tracking-tight">WeCleanIt</span>
+                </div>
+                
+                <!-- Center Navbar Links -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#layanan" class="text-sm font-bold text-gray-600 hover:text-skyblue transition-colors">Layanan</a>
+                    <a href="#cara-kerja" class="text-sm font-bold text-gray-600 hover:text-skyblue transition-colors">Cara Kerja</a>
+                    <a href="#testimoni" class="text-sm font-bold text-gray-600 hover:text-skyblue transition-colors">Testimoni</a>
+                    <a href="#harga" class="text-sm font-bold text-gray-600 hover:text-skyblue transition-colors">Harga</a>
+                </div>
+
+                <!-- Small CTA -->
+                <button onclick="openWhatsApp()" class="bg-skyblue hover:bg-blue-400 text-white px-6 py-2 rounded-full font-bold text-sm transition-all shadow-md">
+                    Pesan
+                </button>
+            </div>
+        </div>
+    </nav>
+    </footer>
+
+</body>
+</html>
