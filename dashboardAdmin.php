@@ -17,9 +17,23 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'admin') {
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Syne:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>    
+    <script>
         tailwind.config = {
-            theme: { extend: { colors: { darkblue: '#0F5A96', skyblue: '#74B4D9', lightsky: '#E0F2FE', neutralbg: '#F0F9FF', whatsapp: '#25D366' }, fontFamily: { sans: ['DM Sans', 'sans-serif'], heading: ['Syne', 'sans-serif'] } } }
+            theme: {
+                extend: {
+                    colors: {
+                        darkblue: '#0F5A96',
+                        skyblue: '#74B4D9',
+                        lightsky: '#E0F2FE',
+                        neutralbg: '#F0F9FF',
+                        whatsapp: '#25D366'
+                    },
+                    fontFamily: {
+                        sans: ['DM Sans', 'sans-serif'],
+                        heading: ['Syne', 'sans-serif'],
+                    }
+                }
+            }
         }
     </script>
     <style>
@@ -29,6 +43,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'admin') {
         ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
         ::-webkit-scrollbar-thumb { background: #74B4D9; border-radius: 10px; }
     </style>
+    
 </head>
 
 </html>

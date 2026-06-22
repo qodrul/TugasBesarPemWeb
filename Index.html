@@ -56,18 +56,15 @@
     <!-- CONFIGURATION SCRIPT -->
     <script>
         const WA_NUMBER = "6285829644612";
+        
 
         // Tombol Pesan (navbar, hero, harga) → redirect ke halaman login/register
-        function openWhatsApp(paket = "") {
-            window.location.href = 'auth.php';
-        }
-
-        // Tombol mengambang WA → langsung buka WhatsApp
-        function openWhatsAppFloat() {
+        function openWhatsApp() {
             const pesan = "Halo, saya ingin bertanya tentang layanan kebersihan WeCleanIt.";
             const url = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(pesan)}`;
             window.open(url, '_blank');
         }
+
 
         // Hero Carousel Logic
         document.addEventListener("DOMContentLoaded", () => {
@@ -86,17 +83,16 @@
     </script>
 
     <!-- Navigation -->
-    <nav class="fixed top-0 w-full bg-white/90 backdrop-blur-md shadow-sm z-50">
+    <nav class="fixed top-0 w-full bg-white/90 backdrop-blur-md shadow-2x z-50">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <!-- Logo -->
                 <div class="flex-shrink-0 flex items-center cursor-pointer" onclick="window.scrollTo(0,0)">
-                    <i class="fa-solid fa-sparkles text-skyblue text-2xl mr-2"></i>
-                    <span class="font-heading font-bold text-2xl text-darkblue tracking-tight">WeCleanIt</span>
+                    <p class="font-heading font-bold text-2xl text-darkblue tracking-tight">WeCleanIt</p>
                 </div>
                 
                 <!-- Center Navbar Links -->
-                <div class="hidden md:flex items-center space-x-8">
+                <div class="flex items-center space-x-8">
                     <a href="#layanan" class="text-sm font-bold text-gray-600 hover:text-skyblue transition-colors">Layanan</a>
                     <a href="#cara-kerja" class="text-sm font-bold text-gray-600 hover:text-skyblue transition-colors">Cara Kerja</a>
                     <a href="#testimoni" class="text-sm font-bold text-gray-600 hover:text-skyblue transition-colors">Testimoni</a>
@@ -112,7 +108,7 @@
     </nav>
 
     <!-- Floating WhatsApp -->
-    <button onclick="openWhatsAppFloat()" class="fixed bottom-6 right-6 bg-whatsapp hover:bg-green-600 text-white w-14 h-14 rounded-full shadow-xl z-50 flex items-center justify-center transition-transform hover:scale-110 active:scale-95">
+    <button onclick="openWhatsApp()" class="fixed bottom-6 right-6 bg-whatsapp hover:bg-green-600 text-white w-14 h-14 rounded-full shadow-xl z-50 flex items-center justify-center transition-transform hover:scale-110 active:scale-95">
         <i class="fa-brands fa-whatsapp text-3xl"></i>
     </button>
 
@@ -134,6 +130,7 @@
             <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-skyblue/30 backdrop-blur-md border border-skyblue/50 mb-4 text-xs md:text-sm font-bold tracking-wider uppercase shadow-lg">
                 <i class="fa-solid fa-location-dot text-white"></i> Khusus Mataram & Sekitarnya
             </div>
+
             <h1 class="font-heading font-extrabold text-5xl md:text-7xl mb-6 leading-tight drop-shadow-lg">
                 Kamar Bersih.<br>Hidup Nyaman.
             </h1>
