@@ -30,4 +30,5 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'admin') {
         ::-webkit-scrollbar-thumb { background: #74B4D9; border-radius: 10px; }
     </style>
 </head>
+
 </html>
