@@ -39,4 +39,42 @@ elseif ($action == 'add_cleaner') {
         echo json_encode(['status' => 'error', 'message' => 'Gagal menambah petugas']);
     }
 }
+
+// 3. Update Petugas
+elseif ($action == 'update_cleaner') {
+    $id    = bersihkan_input($_POST['id'] ?? 0);
+    $name  = bersihkan_input($_POST['name'] ?? '');
+    $phone = bersihkan_input($_POST['phone'] ?? '');
+    $status = bersihkan_input($_POST['status'] ?? 'Tersedia');
+    
+    $query = "UPDATE cleaners SET name = '$name', phone = '$phone', status = '$status' WHERE id = $id";
+    if(mysqli_query($koneksi, $query)) {
+        echo json_encode(['status' => 'success', 'message' => 'Data petugas berhasil diupdate']);
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'Gagal mengupdate petugas']);
+    }
+}
+
+// 4. Hapus Petugas
+elseif ($action == 'delete_cleaner') {
+    $id = bersihkan_input($_POST['id'] ?? 0);
+    
+    // Cek apakah petugas sedang ada kerjaan aktif
+    $cek = mysqli_query($koneksi, "SELECT id FROM orders WHERE cleaner_id = $id AND status IN ('Menunggu', 'Dikonfirmasi', 'Sedang Dikerjakan')");
+    if(mysqli_num_rows($cek) > 0) {
+        echo json_encode(['status' => 'error', 'message' => 'Petugas masih memiliki pesanan aktif dan tidak bisa dihapus']);
+        exit;
+    }
+
+    $query = "DELETE FROM cleaners WHERE id = $id";
+    if(mysqli_query($koneksi, $query)) {
+        echo json_encode(['status' => 'success', 'message' => 'Petugas berhasil dihapus']);
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'Gagal menghapus petugas']);
+    }
+}
+
+else {
+    echo json_encode(['status' => 'error', 'message' => 'Aksi tidak valid']);
+}
 ?>
