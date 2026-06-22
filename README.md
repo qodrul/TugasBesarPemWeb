@@ -28,82 +28,38 @@ Sistem ini mengubah cara tradisional (pesan manual lewat chat yang rentan miskom
 ```
 ## SiteMap
 ```
-WeCleanIt
+WE CLEAN IT
 │
-├── Landing Page
-│   └── index.html
-│       ├── Beranda
-│       ├── Layanan
-│       ├── Tentang Kami
-│       ├── Harga Paket
-│       ├── Testimoni
-│       ├── Kontak
-│       └── Login / Daftar
+├── Home
+│   ├── Tentang Kami
+│   ├── Layanan
+│   ├── Paket Harga
+│   ├── Testimoni
+│   ├── Kontak
+│   └── Login / Registrasi
 │
-├── Autentikasi
-│   └── auth.php
-│       ├── Login
-│       └── Registrasi
+├── Customer
+│   ├── Dashboard
+│   ├── Pesan Layanan
+│   ├── Riwayat Pesanan
+│   ├── Profil
+│   └── Logout
 │
-├── Dashboard Customer
-│   └── dashboardCustomer.php
-│       ├── Beranda
-│       ├── Pesan Layanan
-│       │   ├── Pilih Paket
-│       │   ├── Tentukan Jadwal
-│       │   └── Buat Pesanan
-│       ├── Riwayat Pesanan
-│       ├── Profil
-│       │   ├── Lihat Profil
-│       │   └── Edit Profil
-│       └── Logout
+├── Admin
+│   ├── Dashboard
+│   ├── Kelola Pesanan
+│   ├── Kelola Customer
+│   ├── Kelola Petugas
+│   ├── Kelola Paket
+│   ├── Laporan
+│   └── Logout
 │
-├── Dashboard Admin
-│   └── dashboardAdmin.php
-│       ├── Ringkasan (Overview)
-│       ├── Manajemen Pesanan
-│       ├── Manajemen Petugas
-│       ├── Manajemen Customer
-│       ├── Manajemen Paket
-│       ├── Laporan
-│       └── Logout
-│
-└── API Backend
-    ├── auth_api.php
-    │   ├── Login
-    │   ├── Register
-    │   └── Logout
-    │
-    ├── customer_api.php
-    │   ├── Data Customer
-    │   └── CRUD Customer
-    │
-    ├── profile_api.php
-    │   ├── Lihat Profil
-    │   └── Update Profil
-    │
-    ├── order_api.php
-    │   ├── Tambah Pesanan
-    │   ├── Lihat Pesanan
-    │   ├── Update Status
-    │   └── Hapus Pesanan
-    │
-    ├── package_api.php
-    │   ├── Lihat Paket
-    │   ├── Tambah Paket
-    │   ├── Edit Paket
-    │   └── Hapus Paket
-    │
-    ├── cleaner_api.php
-    │   ├── Data Petugas
-    │   ├── Tambah Petugas
-    │   ├── Edit Petugas
-    │   └── Hapus Petugas
-    │
-    └── report_api.php
-        ├── Laporan Harian
-        ├── Laporan Bulanan
-        └── Statistik
+└── Database
+    ├── User
+    ├── Customer
+    ├── Petugas
+    ├── Paket
+    └── Pesanan
 ```
 ## Teknologi
 HTML, PHP, CSS, Javascript, Tailwind, MySQL
