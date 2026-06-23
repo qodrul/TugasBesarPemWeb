@@ -561,6 +561,27 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'customer') {
             .finally(() => { btn.disabled = false; btn.innerText = 'Batalkan'; });
         }
 
+        function cancelOrder(orderId) {
+            if (!orderId) { alert('ID pesanan tidak ditemukan.'); return; }
+            if (!confirm('Yakin ingin membatalkan pesanan ini?')) return;
+
+            const btn = document.getElementById('btn-cancel-active');
+            btn.disabled = true;
+            btn.innerText = 'Membatalkan...';
+
+            fetch('api/order_api.php', {
+                method: 'POST',
+                body: new URLSearchParams({ action: 'cancel_order', order_id: orderId })
+            })
+            .then(r => r.json())
+            .then(res => {
+                alert(res.message);
+                if (res.status === 'success') loadMyOrders();
+            })
+            .catch(() => alert('Terjadi kesalahan. Coba lagi.'))
+            .finally(() => { btn.disabled = false; btn.innerText = 'Batalkan'; });
+        }
+
         function logout() { if(confirm('Keluar?')) { fetch('api/auth_api.php', {method:'POST', body:new URLSearchParams({action:'logout'})}).then(()=>window.location.href='auth.php'); } }
     </script>
 </body>

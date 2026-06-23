@@ -58,17 +58,8 @@
         const WA_NUMBER = "6285829644612";
         
 
-        // Tombol Pesan (navbar, hero, harga) → redirect ke halaman login/register dengan opsi pre-select paket
-        function openWhatsApp(paketName) {
-            if (paketName) {
-                window.location.href = "auth.php?package=" + encodeURIComponent(paketName);
-            } else {
-                window.location.href = "auth.php";
-            }
-        }
-
-        // Tombol mengambang WA → langsung buka WhatsApp
-        function openWhatsAppFloat() {
+        // Tombol Pesan (navbar, hero, harga) → redirect ke halaman login/register
+        function openWhatsApp() {
             const pesan = "Halo, saya ingin bertanya tentang layanan kebersihan WeCleanIt.";
             const url = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(pesan)}`;
             window.open(url, '_blank');
