@@ -23,8 +23,8 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`name`, `phone`, `password_hash`, `role`) VALUES 
 ('Super Admin', 'admin@wecleanit.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin'),
-('Budi Santoso', '08123456789', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'customer'),
-('Siti Aminah', '08987654321', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'customer');
+('Jajang Alexander', '08123456789', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'customer'),
+('Asep Wazoski', '08987654321', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'customer');
 
 -- 2. Tabel Addresses
 DROP TABLE IF EXISTS `addresses`;
