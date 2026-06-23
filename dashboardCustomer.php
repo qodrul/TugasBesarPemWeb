@@ -113,7 +113,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'customer') {
                     <button onclick="switchTab('riwayat')" class="px-5 py-2 bg-lightsky text-darkblue rounded-xl font-bold text-sm hover:bg-skyblue hover:text-white transition-colors outline-none">
                         Lihat Detail
                     </button>
-                    <button id="btn-cancel-active" onclick="cancelOrder('')" class="px-5 py-2 bg-white border border-red-200 text-red-500 rounded-xl font-bold text-sm hover:bg-red-50 transition-colors outline-none">
+                    <button id="btn-cancel-active" class="px-5 py-2 bg-white border border-red-200 text-red-500 rounded-xl font-bold text-sm hover:bg-red-50 transition-colors outline-none">
                         Batalkan
                     </button>
                 </div>
@@ -317,9 +317,49 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'customer') {
             loadProfile(); loadPackages(); loadMyOrders();
             const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1);
             document.getElementById('booking-date').min = tomorrow.toISOString().split('T')[0];
+            
+            // Auto switch to booking if package is pre-selected in URL
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('package')) {
+                switchTab('pesan');
+            }
         });
 
         function formatRp(num) { return 'Rp ' + parseInt(num).toLocaleString('id-ID'); }
+
+        function uploadPhoto(input) {
+            if (!input.files || !input.files[0]) return;
+            const file = input.files[0];
+            const fd = new FormData();
+            fd.append('action', 'upload_photo');
+            fd.append('photo', file);
+
+            fetch('api/profile_api.php', {
+                method: 'POST',
+                body: fd
+            })
+            .then(r => r.json())
+            .then(res => {
+                alert(res.message);
+                if (res.status === 'success') {
+                    document.getElementById('profile-image').src = res.url;
+                    loadProfile();
+                }
+            })
+            .catch(() => alert('Gagal mengupload foto profil.'));
+        }
+
+        function resetWizard() {
+            currentStep = 1;
+            bData = { package: '', price: 0, date: '', time: '', address: '', payment: '' };
+            document.getElementById('booking-date').value = '';
+            document.getElementById('booking-address').value = '';
+            document.querySelectorAll('.pkg-card').forEach(c => c.className = "pkg-card p-5 rounded-2xl border-2 border-gray-100 bg-white cursor-pointer hover:border-lightsky");
+            document.querySelectorAll('.time-btn').forEach(b => b.className = "time-btn py-3 rounded-xl border border-gray-200 bg-white text-gray-600 font-bold text-sm");
+            document.querySelectorAll('.pay-btn').forEach(b => b.classList.remove('border-skyblue', 'bg-neutralbg'));
+            ['1', '2', '3', '4'].forEach(i => document.getElementById('btn-next-' + i).disabled = true);
+            renderStep();
+        }
 
         function switchTab(tabName) {
             ['dashboard', 'pesan', 'riwayat', 'profil'].forEach(t => document.getElementById('tab-'+t).classList.add('hidden'));
@@ -329,6 +369,10 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'customer') {
             document.querySelectorAll('.nav-mob').forEach(n => { n.classList.remove('text-darkblue'); n.classList.add('text-gray-400'); });
             const mob = document.getElementById('nav-mob-'+tabName);
             if(mob) { mob.classList.remove('text-gray-400'); mob.classList.add('text-darkblue'); }
+            
+            if (tabName === 'pesan') {
+                resetWizard();
+            }
             window.scrollTo(0,0);
         }
 
@@ -382,6 +426,10 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'customer') {
                     document.getElementById('active-order-status').className = `px-3 py-1 rounded-full text-xs font-bold border flex items-center gap-1 ${bc}`;
                     document.getElementById('active-order-status').innerHTML = `<i class="fa-regular fa-clock"></i> ${o.status}`;
                     document.getElementById('active-order-date').innerText = o.order_date + ' ' + o.order_time;
+                    // Simpan order ID ke tombol Batalkan & sembunyikan jika sudah tidak bisa dibatalkan
+                    const btnCancel = document.getElementById('btn-cancel-active');
+                    btnCancel.onclick = () => cancelOrder(o.id);
+                    btnCancel.style.display = o.status === 'Menunggu' ? '' : 'none';
                 }
                 if(i < 3) mini.insertAdjacentHTML('beforeend', `
                     <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex justify-between items-center">
@@ -399,10 +447,21 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'customer') {
         function loadPackages() {
             fetch('api/package_api.php', { method: 'POST', body: new URLSearchParams({action:'get_packages'}) }).then(r=>r.json()).then(res=>{
                 const c = document.getElementById('packages-container'); c.innerHTML='';
-                res.data.forEach(p => c.insertAdjacentHTML('beforeend', `
-                    <div onclick="selPkg('${p.name}', ${p.price}, this)" class="pkg-card p-5 rounded-2xl border-2 border-gray-100 bg-white cursor-pointer hover:border-lightsky">
-                        <h3 class="font-bold">${p.name} <span class="float-right text-darkblue">${formatRp(p.price)}</span></h3>
-                    </div>`));
+                const urlParams = new URLSearchParams(window.location.search);
+                const preSelectPkg = urlParams.get('package');
+                res.data.forEach(p => {
+                    const cardId = `pkg-card-${p.id}`;
+                    c.insertAdjacentHTML('beforeend', `
+                        <div id="${cardId}" onclick="selPkg('${p.name}', ${p.price}, this)" class="pkg-card p-5 rounded-2xl border-2 border-gray-100 bg-white cursor-pointer hover:border-lightsky">
+                            <h3 class="font-bold">${p.name} <span class="float-right text-darkblue">${formatRp(p.price)}</span></h3>
+                        </div>`);
+                    if (preSelectPkg && p.name.toLowerCase() === preSelectPkg.toLowerCase()) {
+                        setTimeout(() => {
+                            const cardEl = document.getElementById(cardId);
+                            if (cardEl) selPkg(p.name, p.price, cardEl);
+                        }, 50);
+                    }
+                });
             });
         }
 
@@ -439,7 +498,13 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'customer') {
             validateStep2();
         }
 
-        function validateStep2() { bData.date=document.getElementById('booking-date').value; document.getElementById('btn-next-2').disabled=!(bData.date&&bData.time); }
+        function validateStep2() { 
+            const d = document.getElementById('booking-date');
+            bData.date = d.value; 
+            let dateValid = bData.date && (!d.min || bData.date >= d.min);
+            if(bData.date && d.min && bData.date < d.min) alert('Tanggal tidak boleh kurang dari H-1!');
+            document.getElementById('btn-next-2').disabled = !(dateValid && bData.time); 
+        }
         function validateStep3() { bData.address=document.getElementById('booking-address').value; document.getElementById('btn-next-3').disabled=(bData.address.trim().length===0); }
 
         function selectPayment(m, el) {
@@ -470,12 +535,30 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'customer') {
 
         function finishPayment() {
             document.getElementById('modal-payment').classList.add('hidden');
-            loadMyOrders(); switchTab('riwayat');
-            // Reset
-            currentStep=1; bData={ package:'', price:0, date:'', time:'', address:'', payment:'' };
-            document.getElementById('booking-date').value=''; document.getElementById('booking-address').value='';
-            ['1','2','3','4'].forEach(i=>document.getElementById('btn-next-'+i).disabled=true);
-            loadPackages(); renderStep();
+            loadMyOrders();
+            resetWizard();
+            switchTab('riwayat');
+        }
+
+        function cancelOrder(orderId) {
+            if (!orderId) { alert('ID pesanan tidak ditemukan.'); return; }
+            if (!confirm('Yakin ingin membatalkan pesanan ini?')) return;
+
+            const btn = document.getElementById('btn-cancel-active');
+            btn.disabled = true;
+            btn.innerText = 'Membatalkan...';
+
+            fetch('api/order_api.php', {
+                method: 'POST',
+                body: new URLSearchParams({ action: 'cancel_order', order_id: orderId })
+            })
+            .then(r => r.json())
+            .then(res => {
+                alert(res.message);
+                if (res.status === 'success') loadMyOrders();
+            })
+            .catch(() => alert('Terjadi kesalahan. Coba lagi.'))
+            .finally(() => { btn.disabled = false; btn.innerText = 'Batalkan'; });
         }
 
         function logout() { if(confirm('Keluar?')) { fetch('api/auth_api.php', {method:'POST', body:new URLSearchParams({action:'logout'})}).then(()=>window.location.href='auth.php'); } }

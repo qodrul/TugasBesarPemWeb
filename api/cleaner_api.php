@@ -45,9 +45,8 @@ elseif ($action == 'update_cleaner') {
     $id    = bersihkan_input($_POST['id'] ?? 0);
     $name  = bersihkan_input($_POST['name'] ?? '');
     $phone = bersihkan_input($_POST['phone'] ?? '');
-    $status = bersihkan_input($_POST['status'] ?? 'Tersedia');
     
-    $query = "UPDATE cleaners SET name = '$name', phone = '$phone', status = '$status' WHERE id = $id";
+    $query = "UPDATE cleaners SET name = '$name', phone = '$phone' WHERE id = $id";
     if(mysqli_query($koneksi, $query)) {
         echo json_encode(['status' => 'success', 'message' => 'Data petugas berhasil diupdate']);
     } else {

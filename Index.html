@@ -58,8 +58,17 @@
         const WA_NUMBER = "6285829644612";
         
 
-        // Tombol Pesan (navbar, hero, harga) → redirect ke halaman login/register
-        function openWhatsApp() {
+        // Tombol Pesan (navbar, hero, harga) → redirect ke halaman login/register dengan opsi pre-select paket
+        function openWhatsApp(paketName) {
+            if (paketName) {
+                window.location.href = "auth.php?package=" + encodeURIComponent(paketName);
+            } else {
+                window.location.href = "auth.php";
+            }
+        }
+
+        // Tombol mengambang WA → langsung buka WhatsApp
+        function openWhatsAppFloat() {
             const pesan = "Halo, saya ingin bertanya tentang layanan kebersihan WeCleanIt.";
             const url = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(pesan)}`;
             window.open(url, '_blank');
@@ -83,7 +92,7 @@
     </script>
 
     <!-- Navigation -->
-    <nav class="fixed top-0 w-full bg-white/90 backdrop-blur-md shadow-2x z-50">
+    <nav class="fixed top-0 w-full bg-white/90 backdrop-blur-md shadow-2xl z-50">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <!-- Logo -->
@@ -108,7 +117,7 @@
     </nav>
 
     <!-- Floating WhatsApp -->
-    <button onclick="openWhatsApp()" class="fixed bottom-6 right-6 bg-whatsapp hover:bg-green-600 text-white w-14 h-14 rounded-full shadow-xl z-50 flex items-center justify-center transition-transform hover:scale-110 active:scale-95">
+    <button onclick="openWhatsAppFloat()" class="fixed bottom-6 right-6 bg-whatsapp hover:bg-green-600 text-white w-14 h-14 rounded-full shadow-xl z-50 flex items-center justify-center transition-transform hover:scale-110 active:scale-95">
         <i class="fa-brands fa-whatsapp text-3xl"></i>
     </button>
 
@@ -410,7 +419,7 @@
                         <a href="#" class="w-10 h-10 rounded-full bg-white/10 hover:bg-skyblue flex items-center justify-center transition-colors">
                             <i class="fa-brands fa-instagram text-lg"></i>
                         </a>
-                        <a onclick="openWhatsApp('085960573502')" class="w-10 h-10 rounded-full bg-white/10 hover:bg-skyblue cursor-pointer flex items-center justify-center transition-colors">
+                        <a onclick="openWhatsAppFloat()" class="w-10 h-10 rounded-full bg-white/10 hover:bg-skyblue cursor-pointer flex items-center justify-center transition-colors">
                             <i class="fa-brands fa-whatsapp text-lg"></i>
                         </a>
                     </div>

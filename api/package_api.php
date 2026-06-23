@@ -11,12 +11,12 @@ $user_role = $_SESSION['role'] ?? 'guest';
 if ($action == 'get_packages') {
     // Kalau admin, bisa lihat semua. Kalau customer, hanya yang aktif
     $where = ($user_role == 'admin') ? "" : "WHERE is_active = 1";
-    
+
     $query = "SELECT * FROM packages $where ORDER BY price ASC";
     $result = mysqli_query($koneksi, $query);
-    
+
     $packages = [];
-    while($row = mysqli_fetch_assoc($result)) {
+    while ($row = mysqli_fetch_assoc($result)) {
         $packages[] = $row;
     }
     echo json_encode(['status' => 'success', 'data' => $packages]);
@@ -30,17 +30,17 @@ elseif ($user_role != 'admin') {
 
 // 2. ADMIN CREATE: Tambah Paket Baru
 elseif ($action == 'add_package') {
-    $name        = bersihkan_input($_POST['name'] ?? '');
-    $price       = bersihkan_input($_POST['price'] ?? 0);
+    $name = bersihkan_input($_POST['name'] ?? '');
+    $price = bersihkan_input($_POST['price'] ?? 0);
     $description = bersihkan_input($_POST['description'] ?? '');
 
-    if(empty($name) || empty($price) || empty($description)){
+    if (empty($name) || empty($price) || empty($description)) {
         echo json_encode(['status' => 'error', 'message' => 'Semua data paket wajib diisi']);
         exit;
     }
 
     $query = "INSERT INTO packages (name, price, description) VALUES ('$name', $price, '$description')";
-    if(mysqli_query($koneksi, $query)) {
+    if (mysqli_query($koneksi, $query)) {
         echo json_encode(['status' => 'success', 'message' => 'Paket berhasil ditambahkan']);
     } else {
         echo json_encode(['status' => 'error', 'message' => 'Gagal menambah paket']);
@@ -49,13 +49,13 @@ elseif ($action == 'add_package') {
 
 // 3. ADMIN UPDATE: Edit Paket
 elseif ($action == 'update_package') {
-    $id          = bersihkan_input($_POST['id'] ?? 0);
-    $name        = bersihkan_input($_POST['name'] ?? '');
-    $price       = bersihkan_input($_POST['price'] ?? 0);
+    $id = bersihkan_input($_POST['id'] ?? 0);
+    $name = bersihkan_input($_POST['name'] ?? '');
+    $price = bersihkan_input($_POST['price'] ?? 0);
     $description = bersihkan_input($_POST['description'] ?? '');
-    
+
     $query = "UPDATE packages SET name = '$name', price = $price, description = '$description' WHERE id = $id";
-    if(mysqli_query($koneksi, $query)) {
+    if (mysqli_query($koneksi, $query)) {
         echo json_encode(['status' => 'success', 'message' => 'Paket berhasil diupdate']);
     } else {
         echo json_encode(['status' => 'error', 'message' => 'Gagal mengupdate paket']);
@@ -65,16 +65,25 @@ elseif ($action == 'update_package') {
 // 4. ADMIN DELETE: Soft Delete Paket (Nonaktifkan)
 elseif ($action == 'delete_package') {
     $id = bersihkan_input($_POST['id'] ?? 0);
-    
+
     $query = "UPDATE packages SET is_active = 0 WHERE id = $id";
-    if(mysqli_query($koneksi, $query)) {
+    if (mysqli_query($koneksi, $query)) {
         echo json_encode(['status' => 'success', 'message' => 'Paket dinonaktifkan']);
     } else {
         echo json_encode(['status' => 'error', 'message' => 'Gagal menonaktifkan paket']);
     }
 }
+// 5. ADMIN RESTORE: Aktifkan kembali Paket
+elseif ($action == 'restore_package') {
+    $id = bersihkan_input($_POST['id'] ?? 0);
 
-else {
+    $query = "UPDATE packages SET is_active = 1 WHERE id = $id";
+    if (mysqli_query($koneksi, $query)) {
+        echo json_encode(['status' => 'success', 'message' => 'Paket berhasil diaktifkan kembali']);
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'Gagal mengaktifkan paket']);
+    }
+} else {
     echo json_encode(['status' => 'error', 'message' => 'Aksi tidak valid']);
 }
 ?>

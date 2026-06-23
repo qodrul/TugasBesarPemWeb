@@ -15,16 +15,16 @@ if ($action == 'get_summary') {
     $today = date('Y-m-d');
     $month = date('Y-m');
 
-    // Pesanan hari ini
-    $q_today = mysqli_query($koneksi, "SELECT COUNT(*) as total FROM orders WHERE order_date = '$today'");
+    // Pesanan dibuat hari ini
+    $q_today = mysqli_query($koneksi, "SELECT COUNT(*) as total FROM orders WHERE DATE(created_at) = '$today'");
     $today_orders = mysqli_fetch_assoc($q_today)['total'];
 
-    // Pesanan bulan ini
-    $q_month = mysqli_query($koneksi, "SELECT COUNT(*) as total FROM orders WHERE order_date LIKE '$month%'");
+    // Pesanan dibuat bulan ini
+    $q_month = mysqli_query($koneksi, "SELECT COUNT(*) as total FROM orders WHERE DATE(created_at) LIKE '$month%'");
     $month_orders = mysqli_fetch_assoc($q_month)['total'];
 
     // Estimasi Pendapatan Bulan Ini (dari pesanan selesai)
-    $q_revenue = mysqli_query($koneksi, "SELECT SUM(price) as total FROM orders WHERE order_date LIKE '$month%' AND status = 'Selesai'");
+    $q_revenue = mysqli_query($koneksi, "SELECT SUM(price) as total FROM orders WHERE DATE(created_at) LIKE '$month%' AND status = 'Selesai'");
     $revenue = mysqli_fetch_assoc($q_revenue)['total'] ?? 0;
 
     // Total Customer Aktif
@@ -47,13 +47,13 @@ elseif ($action == 'get_monthly_report') {
     header('Content-Type: application/json');
     $month = bersihkan_input($_POST['month'] ?? date('Y-m'));
 
-    $q_revenue = mysqli_query($koneksi, "SELECT SUM(price) as total FROM orders WHERE order_date LIKE '$month%' AND status = 'Selesai'");
+    $q_revenue = mysqli_query($koneksi, "SELECT SUM(price) as total FROM orders WHERE DATE(created_at) LIKE '$month%' AND status = 'Selesai'");
     $revenue = mysqli_fetch_assoc($q_revenue)['total'] ?? 0;
 
-    $q_done = mysqli_query($koneksi, "SELECT COUNT(*) as total FROM orders WHERE order_date LIKE '$month%' AND status = 'Selesai'");
+    $q_done = mysqli_query($koneksi, "SELECT COUNT(*) as total FROM orders WHERE DATE(created_at) LIKE '$month%' AND status = 'Selesai'");
     $done = mysqli_fetch_assoc($q_done)['total'];
 
-    $q_cancel = mysqli_query($koneksi, "SELECT COUNT(*) as total FROM orders WHERE order_date LIKE '$month%' AND status = 'Dibatalkan'");
+    $q_cancel = mysqli_query($koneksi, "SELECT COUNT(*) as total FROM orders WHERE DATE(created_at) LIKE '$month%' AND status = 'Dibatalkan'");
     $cancel = mysqli_fetch_assoc($q_cancel)['total'];
 
     echo json_encode([
@@ -77,13 +77,13 @@ elseif ($action == 'export_csv') {
     $output = fopen('php://output', 'w');
     
     // Header Kolom CSV
-    fputcsv($output, array('ID Pesanan', 'Tanggal', 'Nama Customer', 'Paket', 'Harga', 'Status'));
+    fputcsv($output, array('ID Pesanan', 'Tanggal Dibuat', 'Jadwal Pengerjaan', 'Nama Customer', 'Paket', 'Harga', 'Status'));
     
-    $query = "SELECT o.id, o.order_date, u.name, o.package_name, o.price, o.status 
+    $query = "SELECT o.id, o.created_at, CONCAT(o.order_date, ' ', o.order_time) as schedule, u.name, o.package_name, o.price, o.status 
               FROM orders o 
               LEFT JOIN users u ON o.user_id = u.id
-              WHERE o.order_date LIKE '$month%'
-              ORDER BY o.order_date ASC";
+              WHERE DATE(o.created_at) LIKE '$month%'
+              ORDER BY o.created_at ASC";
               
     $result = mysqli_query($koneksi, $query);
     

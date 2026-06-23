@@ -32,6 +32,15 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'admin') {
 </head>
 <body class="font-sans bg-neutralbg text-gray-800 antialiased flex flex-col md:flex-row min-h-screen pb-20 md:pb-0">
 
+    <!-- Mobile Header -->
+    <div class="md:hidden bg-darkblue text-white p-4 sticky top-0 z-50 flex justify-between items-center shadow-md">
+        <div class="flex items-center gap-2">
+            <i class="fa-solid fa-sparkles text-skyblue text-xl"></i>
+            <h1 class="text-xl font-bold font-heading">Admin Panel</h1>
+        </div>
+        <button onclick="logout()" class="text-red-300 font-bold text-sm"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
+    </div>
+
     <aside class="hidden md:flex flex-col w-64 bg-darkblue text-white min-h-screen sticky top-0 shadow-xl z-50 transition-all">
         <div class="p-6 flex items-center gap-3 border-b border-white/10">
             <i class="fa-solid fa-sparkles text-skyblue text-2xl"></i>
@@ -99,8 +108,14 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'admin') {
 
         <!-- === TAB: LAPORAN === -->
         <div id="tab-laporan" class="hidden fade-in space-y-6">
-            <div class="flex justify-between items-center"><h3 class="text-xl font-bold text-darkblue">Laporan Keuangan</h3><button onclick="exportCSV()" class="px-4 py-2 bg-green-600 text-white font-bold rounded-xl text-sm"><i class="fa-solid fa-file-csv"></i> Export CSV</button></div>
-            <div class="bg-white rounded-2xl border shadow-sm p-6 text-center"><div class="w-16 h-16 bg-green-50 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fa-solid fa-chart-line text-2xl"></i></div><h4 class="font-bold text-lg mb-2">Pendapatan Bulan Ini</h4><p id="report-revenue" class="text-3xl font-bold text-darkblue mb-6">Rp 0</p></div>
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <h3 class="text-xl font-bold text-darkblue">Laporan Keuangan</h3>
+                <div class="flex items-center gap-3">
+                    <input type="month" id="report-month" onchange="loadReport()" class="px-4 py-2 rounded-xl border outline-none bg-white">
+                    <button onclick="exportCSV()" class="px-4 py-2 bg-green-600 text-white font-bold rounded-xl text-sm"><i class="fa-solid fa-file-csv"></i> Export CSV</button>
+                </div>
+            </div>
+            <div class="bg-white rounded-2xl border shadow-sm p-6 text-center"><div class="w-16 h-16 bg-green-50 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fa-solid fa-chart-line text-2xl"></i></div><h4 class="font-bold text-lg mb-2">Pendapatan Selesai Bulan Ini</h4><p id="report-revenue" class="text-3xl font-bold text-darkblue mb-6">Rp 0</p></div>
         </div>
 
     </main>
@@ -111,7 +126,6 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'admin') {
             <form id="form-petugas" class="space-y-4"><input type="hidden" id="petugas-id"><input type="hidden" id="petugas-action" value="add_cleaner">
                 <div><label class="block text-sm font-bold mb-1">Nama Petugas</label><input type="text" id="petugas-name" required class="w-full p-3 border rounded-xl"></div>
                 <div><label class="block text-sm font-bold mb-1">No WA</label><input type="tel" id="petugas-phone" required class="w-full p-3 border rounded-xl"></div>
-                <div><label class="block text-sm font-bold mb-1">Status</label><select id="petugas-status" class="w-full p-3 border rounded-xl"><option>Tersedia</option><option>Bertugas</option><option>Off</option></select></div>
                 <div class="flex gap-3"><button type="button" onclick="closeModalPetugas()" class="flex-1 py-3 bg-gray-100 rounded-xl font-bold">Batal</button><button type="submit" class="flex-1 py-3 bg-skyblue text-white rounded-xl font-bold">Simpan</button></div>
             </form>
         </div>
@@ -122,6 +136,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'admin') {
         <div class="bg-white rounded-3xl p-6 w-full max-w-sm"><h3 class="font-bold text-xl text-darkblue mb-4">Tugaskan Cleaner</h3>
             <div class="space-y-4">
                 <input type="hidden" id="assign-order-id">
+                <p id="assign-schedule-info" class="text-sm text-blue-600 mb-2 bg-blue-50 p-2 rounded-xl"></p>
                 <div><label class="block text-sm font-bold mb-1">Pilih Cleaner Tersedia</label>
                     <select id="assign-cleaner-id" class="w-full p-3 border rounded-xl bg-white"></select>
                 </div>
@@ -142,19 +157,61 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'admin') {
         </div>
     </div>
 
+    <!-- Mobile Bottom Nav -->
+    <div class="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 z-50">
+        <div class="flex justify-around items-center p-2">
+            <button onclick="switchAdminTab('overview')" id="nav-mob-overview" class="nav-mob flex flex-col items-center p-1 text-darkblue"><i class="fa-solid fa-chart-pie"></i><span class="text-[9px] font-bold">Ringkasan</span></button>
+            <button onclick="switchAdminTab('pesanan')" id="nav-mob-pesan" class="nav-mob flex flex-col items-center p-1 text-gray-400"><i class="fa-solid fa-clipboard-list"></i><span class="text-[9px] font-bold">Pesanan</span></button>
+            <button onclick="switchAdminTab('petugas')" id="nav-mob-petugas" class="nav-mob flex flex-col items-center p-1 text-gray-400"><i class="fa-solid fa-user-shield"></i><span class="text-[9px] font-bold">Petugas</span></button>
+            <button onclick="switchAdminTab('customer')" id="nav-mob-customer" class="nav-mob flex flex-col items-center p-1 text-gray-400"><i class="fa-solid fa-users"></i><span class="text-[9px] font-bold">Customer</span></button>
+            <button onclick="switchAdminTab('paket')" id="nav-mob-paket" class="nav-mob flex flex-col items-center p-1 text-gray-400"><i class="fa-solid fa-tags"></i><span class="text-[9px] font-bold">Paket</span></button>
+            <button onclick="switchAdminTab('laporan')" id="nav-mob-laporan" class="nav-mob flex flex-col items-center p-1 text-gray-400"><i class="fa-solid fa-file-invoice"></i><span class="text-[9px] font-bold">Laporan</span></button>
+        </div>
+    </div>
+
     <script>
         const formatRp = num => 'Rp ' + parseInt(num).toLocaleString('id-ID');
         let globalCleaners = [];
+        let globalPackages = [];
 
-        document.addEventListener('DOMContentLoaded', () => { loadSummary(); loadOrders(); loadCustomers(); loadPackages(); loadCleaners(); loadReport(); });
+        function escapeHtml(string) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return String(string).replace(/[&<>"']/g, function(m) { return map[m]; });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => { 
+            const d = new Date();
+            const reportMonthInput = document.getElementById('report-month');
+            if (reportMonthInput) reportMonthInput.value = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+            loadSummary(); loadOrders(); loadCustomers(); loadPackages(); loadCleaners(); loadReport(); 
+        });
 
         function switchAdminTab(t) {
             ['overview', 'pesanan', 'petugas', 'customer', 'paket', 'laporan'].forEach(x => {
                 document.getElementById('tab-'+x).classList.add('hidden');
                 document.getElementById('nav-desk-'+x).className = "w-full flex items-center gap-3 px-4 py-3 text-lightsky hover:bg-white/10 rounded-xl font-semibold";
+                
+                const mobBtn = document.getElementById('nav-mob-' + (x === 'pesanan' ? 'pesan' : x));
+                if (mobBtn) {
+                    mobBtn.classList.remove('text-darkblue');
+                    mobBtn.classList.add('text-gray-400');
+                }
             });
             document.getElementById('tab-'+t).classList.remove('hidden');
             document.getElementById('nav-desk-'+t).className = "w-full flex items-center gap-3 px-4 py-3 bg-skyblue text-white rounded-xl font-bold";
+            
+            const activeMobBtn = document.getElementById('nav-mob-' + (t === 'pesanan' ? 'pesan' : t));
+            if (activeMobBtn) {
+                activeMobBtn.classList.remove('text-gray-400');
+                activeMobBtn.classList.add('text-darkblue');
+            }
+            window.scrollTo(0,0);
         }
 
         // --- DASHBOARD DATA ---
@@ -168,7 +225,12 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'admin') {
                 }
             });
         }
-        function loadReport() { fetch('api/report_api.php', { method: 'POST', body: new URLSearchParams({action:'get_monthly_report'}) }).then(r=>r.json()).then(res=> document.getElementById('report-revenue').innerText=formatRp(res.data.revenue)); }
+        function loadReport() { 
+            const m = document.getElementById('report-month').value;
+            fetch('api/report_api.php', { method: 'POST', body: new URLSearchParams({action:'get_monthly_report', month:m}) })
+            .then(r=>r.json())
+            .then(res=> document.getElementById('report-revenue').innerText=formatRp(res.data.revenue)); 
+        }
 
         // --- PETUGAS (CLEANERS) ---
         function loadCleaners() {
@@ -178,22 +240,28 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'admin') {
                     const list = document.getElementById('petugas-list'); list.innerHTML='';
                     res.data.forEach(c => {
                         let badge = c.status==='Tersedia'?'bg-green-100 text-green-700':c.status==='Bertugas'?'bg-yellow-100 text-yellow-700':'bg-red-100 text-red-700';
-                        list.insertAdjacentHTML('beforeend', `<tr class="hover:bg-gray-50"><td class="p-4 font-bold text-darkblue">${c.name}</td><td class="p-4">${c.phone}</td><td class="p-4"><span class="px-2 py-1 rounded text-xs font-bold ${badge}">${c.status}</span></td><td class="p-4 text-right"><button onclick="openModalPetugas(${c.id},'${c.name}','${c.phone}','${c.status}')" class="px-3 py-1 bg-gray-100 rounded text-sm font-bold">Edit</button> <button onclick="deletePetugas(${c.id})" class="px-3 py-1 bg-red-50 text-red-500 rounded text-sm font-bold">Hapus</button></td></tr>`);
+                        list.insertAdjacentHTML('beforeend', `<tr class="hover:bg-gray-50"><td class="p-4 font-bold text-darkblue">${escapeHtml(c.name)}</td><td class="p-4">${escapeHtml(c.phone)}</td><td class="p-4"><span class="px-2 py-1 rounded text-xs font-bold ${badge}">${escapeHtml(c.status)}</span></td><td class="p-4 text-right"><button onclick="editPetugas(${c.id})" class="px-3 py-1 bg-gray-100 rounded text-sm font-bold">Edit</button> <button onclick="deletePetugas(${c.id})" class="px-3 py-1 bg-red-50 text-red-500 rounded text-sm font-bold">Hapus</button></td></tr>`);
                     });
                 }
             });
         }
-        function openModalPetugas(id='', name='', phone='', status='Tersedia') {
+        function openModalPetugas(id='', name='', phone='') {
             document.getElementById('modal-petugas').classList.remove('hidden');
             document.getElementById('petugas-id').value = id; document.getElementById('petugas-name').value = name;
-            document.getElementById('petugas-phone').value = phone; document.getElementById('petugas-status').value = status;
+            document.getElementById('petugas-phone').value = phone;
             document.getElementById('petugas-action').value = id ? 'update_cleaner' : 'add_cleaner';
+        }
+        function editPetugas(id) {
+            const c = globalCleaners.find(x => x.id == id);
+            if (c) {
+                openModalPetugas(c.id, c.name, c.phone);
+            }
         }
         function closeModalPetugas() { document.getElementById('modal-petugas').classList.add('hidden'); }
         document.getElementById('form-petugas').onsubmit = e => {
             e.preventDefault(); const fd = new URLSearchParams(new FormData(e.target));
             fd.append('action', document.getElementById('petugas-action').value); fd.append('id', document.getElementById('petugas-id').value);
-            fd.append('name', document.getElementById('petugas-name').value); fd.append('phone', document.getElementById('petugas-phone').value); fd.append('status', document.getElementById('petugas-status').value);
+            fd.append('name', document.getElementById('petugas-name').value); fd.append('phone', document.getElementById('petugas-phone').value);
             fetch('api/cleaner_api.php', { method: 'POST', body: fd }).then(r=>r.json()).then(res=>{ alert(res.message); if(res.status==='success'){ closeModalPetugas(); loadCleaners(); }});
         };
         function deletePetugas(id) {
@@ -201,17 +269,28 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'admin') {
         }
 
         // --- ASSIGN CLEANER MODAL ---
-        function openModalAssign(orderId) {
+        function openModalAssign(orderId, date, time) {
             document.getElementById('assign-order-id').value = orderId;
+            document.getElementById('assign-schedule-info').innerHTML = `<i class="fa-regular fa-calendar"></i> Jadwal: <b>${date}</b> jam <b>${time}</b>`;
             const select = document.getElementById('assign-cleaner-id'); select.innerHTML = '<option value="">-- Pilih Petugas Tersedia --</option>';
-            globalCleaners.filter(c => c.status === 'Tersedia').forEach(c => select.insertAdjacentHTML('beforeend', `<option value="${c.id}">${c.name}</option>`));
+            globalCleaners.filter(c => c.status === 'Tersedia').forEach(c => select.insertAdjacentHTML('beforeend', `<option value="${c.id}">${escapeHtml(c.name)}</option>`));
             document.getElementById('modal-assign').classList.remove('hidden');
         }
         function closeModalAssign() { document.getElementById('modal-assign').classList.add('hidden'); }
         function submitAssignCleaner() {
             const oid = document.getElementById('assign-order-id').value; const cid = document.getElementById('assign-cleaner-id').value;
             if(!cid) return alert('Pilih petugas!');
-            fetch('api/order_api.php', { method: 'POST', body: new URLSearchParams({action:'assign_cleaner', order_id:oid, cleaner_id:cid}) }).then(r=>r.json()).then(res=>{ alert(res.message); closeModalAssign(); loadOrders(); loadCleaners(); });
+            fetch('api/order_api.php', { method: 'POST', body: new URLSearchParams({action:'assign_cleaner', order_id:oid, cleaner_id:cid}) })
+            .then(r=>r.json())
+            .then(res=>{ 
+                alert(res.message); 
+                if (res.status === 'success') {
+                    closeModalAssign(); 
+                    loadOrders(); 
+                    loadCleaners(); 
+                }
+            })
+            .catch(() => alert('Terjadi kesalahan saat menugaskan petugas.'));
         }
 
         // --- PESANAN ---
@@ -223,25 +302,134 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'admin') {
                 res.data.forEach(o => {
                     let bc = o.status==='Menunggu'?'bg-yellow-100 text-yellow-700':o.status==='Selesai'?'bg-green-100 text-green-700':'bg-blue-100 text-blue-700';
                     let act = o.status==='Menunggu' ? `<button onclick="confirmOrder('${o.id}')" class="px-2 py-1 bg-green-50 text-green-600 rounded font-bold text-xs"><i class="fa-solid fa-check"></i> Acc</button> <button onclick="cancelOrderAdmin('${o.id}')" class="px-2 py-1 bg-red-50 text-red-600 rounded font-bold text-xs"><i class="fa-solid fa-xmark"></i> Batal</button>` : 
-                             (o.status==='Dikonfirmasi' ? `<button onclick="openModalAssign('${o.id}')" class="px-2 py-1 bg-skyblue text-white rounded font-bold text-xs">Tugaskan</button>` : 
+                             (o.status==='Dikonfirmasi' ? `<button onclick="openModalAssign('${o.id}', '${o.order_date}', '${o.order_time}')" class="px-2 py-1 bg-skyblue text-white rounded font-bold text-xs">Tugaskan</button>` : 
                              (o.status==='Sedang Dikerjakan' ? `<button onclick="updateStatus('${o.id}','Selesai')" class="px-2 py-1 bg-green-50 text-green-600 rounded font-bold text-xs">Selesai</button>` : ''));
                     
-                    full.insertAdjacentHTML('beforeend', `<tr class="hover:bg-gray-50 border-b border-gray-100"><td class="p-4 font-bold text-gray-700">${o.id}</td><td class="p-4"><p class="font-bold">${o.customer_name}</p></td><td class="p-4"><p class="font-bold">${o.package_name}</p><p class="text-xs text-gray-500">${o.payment_method}</p></td><td class="p-4"><span class="px-2 py-1 rounded text-xs font-bold ${bc}">${o.status}</span><p class="text-xs mt-1 font-bold text-darkblue">${o.cleaner_name?'Cleaner: '+o.cleaner_name:''}</p></td><td class="p-4 text-center">${act}</td></tr>`);
-                    if(o.status==='Menunggu') { wC++; quick.insertAdjacentHTML('beforeend', `<tr><td class="p-4">${o.id}</td><td class="p-4">${o.customer_name}</td><td class="p-4">${o.package_name}</td><td class="p-4 text-right"><button onclick="confirmOrder('${o.id}')" class="px-3 py-1 bg-skyblue text-white rounded font-bold text-xs">Konfirmasi</button></td></tr>`); }
+                    full.insertAdjacentHTML('beforeend', `<tr class="hover:bg-gray-50 border-b border-gray-100"><td class="p-4 font-bold text-gray-700">${escapeHtml(o.id)}</td><td class="p-4"><p class="font-bold">${escapeHtml(o.customer_name)}</p></td><td class="p-4"><p class="font-bold">${escapeHtml(o.package_name)}</p><p class="text-xs text-gray-500">${escapeHtml(o.payment_method)}</p><p class="text-xs text-blue-600 mt-1 font-bold"><i class="fa-regular fa-calendar"></i> ${escapeHtml(o.order_date)} | ${escapeHtml(o.order_time)}</p></td><td class="p-4"><span class="px-2 py-1 rounded text-xs font-bold ${bc}">${escapeHtml(o.status)}</span><p class="text-xs mt-1 font-bold text-darkblue">${o.cleaner_name?'Cleaner: '+escapeHtml(o.cleaner_name):''}</p></td><td class="p-4 text-center">${act}</td></tr>`);
+                    if(o.status==='Menunggu') { wC++; quick.insertAdjacentHTML('beforeend', `<tr><td class="p-4">${escapeHtml(o.id)}</td><td class="p-4">${escapeHtml(o.customer_name)}</td><td class="p-4">${escapeHtml(o.package_name)}</td><td class="p-4 text-right"><button onclick="confirmOrder('${o.id}')" class="px-3 py-1 bg-skyblue text-white rounded font-bold text-xs">Konfirmasi</button></td></tr>`); }
                 });
                 if(wC===0) quick.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-gray-500">Aman, tidak ada yang menunggu.</td></tr>';
             });
         }
-        function confirmOrder(id) { if(confirm('Acc pesanan?')) fetch('api/order_api.php', { method: 'POST', body: new URLSearchParams({action:'confirm_order', order_id:id}) }).then(()=>loadOrders()); }
-        function updateStatus(id, st) { if(confirm('Update status jadi '+st+'?')) fetch('api/order_api.php', { method: 'POST', body: new URLSearchParams({action:'update_status', order_id:id, status:st}) }).then(()=>loadOrders()); }
-        function cancelOrderAdmin(id) { const r = prompt("Alasan:"); if(r) fetch('api/order_api.php', { method: 'POST', body: new URLSearchParams({action:'update_status', order_id:id, status:'Dibatalkan', reason:r}) }).then(()=>loadOrders()); }
+        function confirmOrder(id) { 
+            if(confirm('Acc pesanan?')) {
+                fetch('api/order_api.php', { method: 'POST', body: new URLSearchParams({action:'confirm_order', order_id:id}) })
+                .then(r => r.json())
+                .then(res => {
+                    alert(res.message);
+                    loadOrders();
+                })
+                .catch(() => alert('Gagal mengkonfirmasi pesanan.'));
+            } 
+        }
+        function updateStatus(id, st) { 
+            if(confirm('Update status jadi '+st+'?')) {
+                fetch('api/order_api.php', { method: 'POST', body: new URLSearchParams({action:'update_status', order_id:id, status:st}) })
+                .then(r => r.json())
+                .then(res => {
+                    alert(res.message);
+                    loadOrders();
+                    loadCleaners();
+                })
+                .catch(() => alert('Gagal merubah status.'));
+            } 
+        }
+        function cancelOrderAdmin(id) { 
+            const r = prompt("Alasan:"); 
+            if(r) {
+                fetch('api/order_api.php', { method: 'POST', body: new URLSearchParams({action:'update_status', order_id:id, status:'Dibatalkan', reason:r}) })
+                .then(r => r.json())
+                .then(res => {
+                    alert(res.message);
+                    loadOrders();
+                    loadCleaners();
+                })
+                .catch(() => alert('Gagal membatalkan pesanan.'));
+            } 
+        }
 
         // --- CUSTOMER, PAKET, LOGOUT ---
-        function loadCustomers() { fetch('api/customer_api.php', { method: 'POST', body: new URLSearchParams({action:'get_customers'}) }).then(r=>r.json()).then(res=>{ const lst=document.getElementById('customer-list'); lst.innerHTML=''; res.data.forEach(c=>lst.insertAdjacentHTML('beforeend', `<tr><td class="p-4 font-bold text-darkblue">${c.name}</td><td class="p-4">${c.phone}</td><td class="p-4 text-center font-bold">${c.total_orders}</td><td class="p-4">${c.created_at.split(' ')[0]}</td></tr>`)); }); }
-        function loadPackages() { fetch('api/package_api.php', { method: 'POST', body: new URLSearchParams({action:'get_packages'}) }).then(r=>r.json()).then(res=>{ const lst=document.getElementById('package-list'); lst.innerHTML=''; res.data.forEach(p=>lst.insertAdjacentHTML('beforeend', `<div class="bg-white p-6 rounded-2xl border shadow-sm relative"><button onclick="document.getElementById('modal-paket').classList.remove('hidden'); document.getElementById('paket-id').value=${p.id}; document.getElementById('paket-name').value='${p.name}'; document.getElementById('paket-price').value=${p.price}; document.getElementById('paket-desc').value='${p.description}'; document.getElementById('paket-action').value='update_package';" class="absolute top-4 right-4 bg-gray-100 px-3 py-1 rounded text-xs font-bold">Edit</button><h4 class="font-bold text-lg mb-1">${p.name}</h4><p class="text-2xl font-bold text-darkblue mb-2">${formatRp(p.price)}</p><p class="text-sm text-gray-500">${p.description}</p></div>`)); }); }
-        document.getElementById('form-paket').onsubmit = e => { e.preventDefault(); const fd = new URLSearchParams(new FormData(e.target)); fd.append('action', document.getElementById('paket-action').value); fd.append('id', document.getElementById('paket-id').value); fd.append('name', document.getElementById('paket-name').value); fd.append('price', document.getElementById('paket-price').value); fd.append('description', document.getElementById('paket-desc').value); fetch('api/package_api.php', { method:'POST', body:fd }).then(()=>{ document.getElementById('modal-paket').classList.add('hidden'); loadPackages(); }); };
+        function loadCustomers() { fetch('api/customer_api.php', { method: 'POST', body: new URLSearchParams({action:'get_customers'}) }).then(r=>r.json()).then(res=>{ const lst=document.getElementById('customer-list'); lst.innerHTML=''; res.data.forEach(c=>lst.insertAdjacentHTML('beforeend', `<tr><td class="p-4 font-bold text-darkblue">${escapeHtml(c.name)}</td><td class="p-4">${escapeHtml(c.phone)}</td><td class="p-4 text-center font-bold">${c.total_orders}</td><td class="p-4">${c.created_at.split(' ')[0]}</td></tr>`)); }); }
+        
+        function loadPackages() { 
+            fetch('api/package_api.php', { method: 'POST', body: new URLSearchParams({action:'get_packages'}) }).then(r=>r.json()).then(res=>{ 
+                globalPackages = res.data;
+                const lst=document.getElementById('package-list'); lst.innerHTML=''; 
+                res.data.forEach(p=> {
+                    let isActive = p.is_active == 1;
+                    let opacity = isActive ? '' : 'opacity-60 bg-gray-50';
+                    let badge = isActive ? '' : '<span class="absolute top-4 left-4 bg-gray-500 text-white px-2 py-1 rounded text-[10px] font-bold uppercase">Nonaktif</span>';
+                    let actionBtn = isActive 
+                        ? `<button onclick="deletePackage(${p.id})" class="absolute top-4 right-16 bg-red-50 text-red-500 px-3 py-1 rounded text-xs font-bold">Hapus</button>`
+                        : `<button onclick="restorePackage(${p.id})" class="absolute top-4 right-16 bg-green-50 text-green-600 px-3 py-1 rounded text-xs font-bold">Pulihkan</button>`;
+                    
+                    lst.insertAdjacentHTML('beforeend', `
+                    <div class="p-6 rounded-2xl border shadow-sm relative ${opacity} ${isActive?'bg-white':''}">
+                        ${badge}
+                        <button onclick="editPackage(${p.id})" class="absolute top-4 right-4 bg-gray-200 px-3 py-1 rounded text-xs font-bold">Edit</button>
+                        ${actionBtn}
+                        <h4 class="font-bold text-lg mb-1 mt-4">${escapeHtml(p.name)}</h4>
+                        <p class="text-2xl font-bold text-darkblue mb-2">${formatRp(p.price)}</p>
+                        <p class="text-sm text-gray-500">${escapeHtml(p.description)}</p>
+                    </div>`);
+                }); 
+            }); 
+        }
+        function deletePackage(id) { if(confirm('Nonaktifkan paket ini?')) { fetch('api/package_api.php', { method: 'POST', body: new URLSearchParams({action:'delete_package', id:id}) }).then(r=>r.json()).then(res=>{ alert(res.message); loadPackages(); }); } }
+        function restorePackage(id) { if(confirm('Aktifkan kembali paket ini?')) { fetch('api/package_api.php', { method: 'POST', body: new URLSearchParams({action:'restore_package', id:id}) }).then(r=>r.json()).then(res=>{ alert(res.message); loadPackages(); }); } }
+        function editPackage(id) {
+            const p = globalPackages.find(x => x.id == id);
+            if (p) {
+                document.getElementById('modal-paket').classList.remove('hidden');
+                document.getElementById('paket-id').value = p.id;
+                document.getElementById('paket-name').value = p.name;
+                document.getElementById('paket-price').value = p.price;
+                document.getElementById('paket-desc').value = p.description;
+                document.getElementById('paket-action').value = 'update_package';
+            }
+        }
+
+        function deletePackage(id) {
+            if (confirm('Nonaktifkan paket ini?')) {
+                fetch('api/package_api.php', {
+                    method: 'POST',
+                    body: new URLSearchParams({ action: 'delete_package', id: id })
+                })
+                .then(r => r.json())
+                .then(res => {
+                    alert(res.message);
+                    loadPackages();
+                })
+                .catch(() => alert('Gagal menonaktifkan paket.'));
+            }
+        }
+
+        document.getElementById('form-paket').onsubmit = e => { 
+            e.preventDefault(); const fd = new URLSearchParams(new FormData(e.target)); 
+            fd.append('action', document.getElementById('paket-action').value); fd.append('id', document.getElementById('paket-id').value); 
+            fd.append('name', document.getElementById('paket-name').value); fd.append('price', document.getElementById('paket-price').value); 
+            fd.append('description', document.getElementById('paket-desc').value); 
+            fetch('api/package_api.php', { method:'POST', body:fd }).then(r=>r.json()).then(res=>{
+                alert(res.message);
+                document.getElementById('modal-paket').classList.add('hidden'); 
+                loadPackages(); 
+            }); 
+        };
+
+        function openModalPaket() {
+            document.getElementById('modal-paket').classList.remove('hidden');
+            document.getElementById('paket-id').value = '';
+            document.getElementById('paket-name').value = '';
+            document.getElementById('paket-price').value = '';
+            document.getElementById('paket-desc').value = '';
+            document.getElementById('paket-action').value = 'add_package';
+        }
+
         function logout() { if(confirm('Keluar?')) fetch('api/auth_api.php', { method:'POST', body:new URLSearchParams({action:'logout'}) }).then(()=>window.location.href='auth.php'); }
-        function exportCSV() { window.location.href = 'api/report_api.php?action=export_csv'; }
+        function exportCSV() { 
+            const m = document.getElementById('report-month').value;
+            window.location.href = 'api/report_api.php?action=export_csv&month=' + m; 
+        }
     </script>
 </body>
 </html>

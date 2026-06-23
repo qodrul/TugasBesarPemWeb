@@ -13,7 +13,7 @@ $user_role = $_SESSION['role'];
 
 // Generate ID Pesanan (Format: ORD-XXXX)
 function generateOrderID($koneksi) {
-    $result = mysqli_query($koneksi, "SELECT id FROM orders ORDER BY id DESC LIMIT 1");
+    $result = mysqli_query($koneksi, "SELECT id FROM orders ORDER BY CAST(SUBSTRING(id, 5) AS UNSIGNED) DESC LIMIT 1");
     if (mysqli_num_rows($result) > 0) {
         $row = mysqli_fetch_assoc($result);
         $last_id = $row['id'];
@@ -125,6 +125,7 @@ elseif ($action == 'assign_cleaner' && $user_role == 'admin') {
 
     $query = "UPDATE orders SET cleaner_id = $cleaner_id, status = 'Sedang Dikerjakan' WHERE id = '$order_id'";
     if(mysqli_query($koneksi, $query)) {
+        mysqli_query($koneksi, "UPDATE cleaners SET status = 'Bertugas' WHERE id = $cleaner_id");
         echo json_encode(['status' => 'success', 'message' => 'Cleaner berhasil ditugaskan']);
     } else {
         echo json_encode(['status' => 'error', 'message' => 'Gagal menugaskan cleaner']);
@@ -137,8 +138,16 @@ elseif ($action == 'update_status' && $user_role == 'admin') {
     $new_status = bersihkan_input($_POST['status'] ?? '');
     $reason = bersihkan_input($_POST['reason'] ?? '');
     
+    // Ambil cleaner_id sebelum update status
+    $get_cleaner = mysqli_query($koneksi, "SELECT cleaner_id FROM orders WHERE id = '$order_id'");
+    $order = mysqli_fetch_assoc($get_cleaner);
+    $cleaner_id = $order['cleaner_id'] ?? null;
+
     $query = "UPDATE orders SET status = '$new_status', cancel_reason = '$reason' WHERE id = '$order_id'";
     if(mysqli_query($koneksi, $query)) {
+        if (($new_status == 'Selesai' || $new_status == 'Dibatalkan') && !empty($cleaner_id)) {
+            mysqli_query($koneksi, "UPDATE cleaners SET status = 'Tersedia' WHERE id = $cleaner_id");
+        }
         echo json_encode(['status' => 'success', 'message' => 'Status berhasil diubah menjadi ' . $new_status]);
     } else {
         echo json_encode(['status' => 'error', 'message' => 'Gagal merubah status']);

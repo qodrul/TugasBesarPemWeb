@@ -2,8 +2,9 @@
 session_start();
 // Jika sudah login, lempar ke dashboard sesuai rolenya
 if (isset($_SESSION['user_id'])) {
+    $pkg = isset($_GET['package']) ? '?package=' . urlencode($_GET['package']) : '';
     if ($_SESSION['role'] == 'admin') header("Location: dashboardAdmin.php");
-    else header("Location: dashboardCustomer.php");
+    else header("Location: dashboardCustomer.php" . $pkg);
     exit;
 } 
 ?>
@@ -201,7 +202,7 @@ if (isset($_SESSION['user_id'])) {
         document.getElementById('form-login').addEventListener('submit', function(e){
             e.preventDefault();
             const btn = document.getElementById('btn-login');
-            btn.innerHTML = 'Memeriksa... <i class"fa-solid fa-spinner fa-spin"></i>'; btn.disabled = true;
+            btn.innerHTML = 'Memeriksa... <i class="fa-solid fa-spinner fa-spin"></i>'; btn.disabled = true;
 
             const fd = new FormData();
             fd.append('action', 'login');
@@ -213,7 +214,13 @@ if (isset($_SESSION['user_id'])) {
             .then(data => {
                 if(data.status === 'success'){
                     showToast('login berhasil! Mengalihkan...','success');
-                    setTimeout(() => window.location.href = data.redirect, 1000);
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const pkg = urlParams.get('package');
+                    let redir = data.redirect;
+                    if (pkg) {
+                        redir += (redir.includes('?') ? '&' : '?') + 'package=' + encodeURIComponent(pkg);
+                    }
+                    setTimeout(() => window.location.href = redir, 1000);
                 } else {
                     showToast(data.message, 'error');
                 }

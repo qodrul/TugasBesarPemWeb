@@ -74,7 +74,11 @@ elseif ($action == 'upload_photo') {
     // 4. Buat nama file unik
     $ekstensi  = pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION);
     $nama_file = "profile_" . $user_id . "_" . time() . "." . $ekstensi;
-    $tujuan    = "../uploads/profiles/" . $nama_file;
+    $dir       = "../uploads/profiles/";
+    if (!file_exists($dir)) {
+        mkdir($dir, 0777, true);
+    }
+    $tujuan    = $dir . $nama_file;
     
     // 5. Pindahkan file
     if(move_uploaded_file($_FILES['photo']['tmp_name'], $tujuan)) {
