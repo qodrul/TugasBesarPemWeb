@@ -60,6 +60,11 @@
 
         // Tombol Pesan (navbar, hero, harga) → redirect ke halaman login/register
         function openWhatsApp() {
+            window.location.href = "auth.php";
+        }
+
+        // Tombol mengambang WA → langsung buka WhatsApp
+        function openWhatsAppFloat() {
             const pesan = "Halo, saya ingin bertanya tentang layanan kebersihan WeCleanIt.";
             const url = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(pesan)}`;
             window.open(url, '_blank');
@@ -108,7 +113,7 @@
     </nav>
 
     <!-- Floating WhatsApp -->
-    <button onclick="openWhatsApp()" class="fixed bottom-6 right-6 bg-whatsapp hover:bg-green-600 text-white w-14 h-14 rounded-full shadow-xl z-50 flex items-center justify-center transition-transform hover:scale-110 active:scale-95">
+    <button onclick="openWhatsAppFloat()" class="fixed bottom-6 right-6 bg-whatsapp hover:bg-green-600 text-white w-14 h-14 rounded-full shadow-xl z-50 flex items-center justify-center transition-transform hover:scale-110 active:scale-95">
         <i class="fa-brands fa-whatsapp text-3xl"></i>
     </button>
 
