@@ -382,6 +382,10 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'customer') {
                     document.getElementById('active-order-status').className = `px-3 py-1 rounded-full text-xs font-bold border flex items-center gap-1 ${bc}`;
                     document.getElementById('active-order-status').innerHTML = `<i class="fa-regular fa-clock"></i> ${o.status}`;
                     document.getElementById('active-order-date').innerText = o.order_date + ' ' + o.order_time;
+                    // Simpan order ID ke tombol Batalkan & sembunyikan jika sudah tidak bisa dibatalkan
+                    const btnCancel = document.getElementById('btn-cancel-active');
+                    btnCancel.onclick = () => cancelOrder(o.id);
+                    btnCancel.style.display = o.status === 'Menunggu' ? '' : 'none';
                 }
                 if(i < 3) mini.insertAdjacentHTML('beforeend', `
                     <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex justify-between items-center">
@@ -476,6 +480,27 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'customer') {
             document.getElementById('booking-date').value=''; document.getElementById('booking-address').value='';
             ['1','2','3','4'].forEach(i=>document.getElementById('btn-next-'+i).disabled=true);
             loadPackages(); renderStep();
+        }
+
+        function cancelOrder(orderId) {
+            if (!orderId) { alert('ID pesanan tidak ditemukan.'); return; }
+            if (!confirm('Yakin ingin membatalkan pesanan ini?')) return;
+
+            const btn = document.getElementById('btn-cancel-active');
+            btn.disabled = true;
+            btn.innerText = 'Membatalkan...';
+
+            fetch('api/order_api.php', {
+                method: 'POST',
+                body: new URLSearchParams({ action: 'cancel_order', order_id: orderId })
+            })
+            .then(r => r.json())
+            .then(res => {
+                alert(res.message);
+                if (res.status === 'success') loadMyOrders();
+            })
+            .catch(() => alert('Terjadi kesalahan. Coba lagi.'))
+            .finally(() => { btn.disabled = false; btn.innerText = 'Batalkan'; });
         }
 
         function logout() { if(confirm('Keluar?')) { fetch('api/auth_api.php', {method:'POST', body:new URLSearchParams({action:'logout'})}).then(()=>window.location.href='auth.php'); } }
