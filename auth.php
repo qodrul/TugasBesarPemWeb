@@ -52,6 +52,10 @@ if (isset($_SESSION['user_id'])) {
     <div class="w-full max-w-md bg-white rounded-3xl shadow-xl overflow-hidden border border-lightsky relative">
         <div class="bg-darkblue p-6 text-center text-white relative">
             <div class="absolute inset-0 bg-gradient-to-b from-darkblue to-skyblue opacity-90"></div>
+            <!-- Tombol Kembali -->
+            <a href="Index.html" class="absolute top-4 left-4 z-20 text-white/80 hover:text-white transition-colors flex items-center gap-1.5 text-xs font-semibold">
+                <i class="fa-solid fa-arrow-left"></i> Kembali
+            </a>
             <div class="relative z-10 flex flex-col items-center">
                 <div class="w-16 h-16 bg-white text-skyblue rounded-2xl flex items-center justify-center mb-3 shadow-lg">
                     <i class="fa-solid fa-shield-halved text-3xl"></i>
