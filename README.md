@@ -98,10 +98,14 @@ Customer berhasil memilih foto profil dan menekan tombol upload, namun foto prof
 5. Foto profil tidak berubah.
 
 **Hipotesis Penyebab:**
-Proses upload file gagal karena direktori penyimpanan belum dibuat, permission folder tidak sesuai, atau proses `move_uploaded_file()` gagal dijalankan.
+Proses upload file gagal karena direktori penyimpanan tidak dibuat secara dinamis.
+<img width="1036" height="118" alt="image" src="https://github.com/user-attachments/assets/79b5fa04-0fb5-432b-8105-3967f371c03b" />
+
 
 **Fix (apa yang diubah):**
-Menambahkan pengecekan keberhasilan upload file, memastikan folder upload tersedia, dan menampilkan pesan error ketika proses upload gagal.
+Menambahkan pengecekan keberhasilan upload file, memastikan folder upload tersedia, dan membuat direktori secara otomatis jika belumm ada.
+<img width="1004" height="256" alt="image" src="https://github.com/user-attachments/assets/857ea296-eb9f-43f4-9e1c-fe593e9c7e11" />
+
 
 **Bukti:**
 `profile_api.php` melakukan validasi file tetapi belum terdapat pencatatan error apabila proses penyimpanan file gagal.
@@ -122,9 +126,13 @@ Cleaner yang sedang mengerjakan pesanan masih ditampilkan dengan status "Tersedi
 
 **Hipotesis Penyebab:**
 Tidak terdapat proses otomatis yang mengubah status cleaner ketika pesanan berpindah ke status "Sedang Dikerjakan" atau "Selesai".
+<img width="1600" height="540" alt="image" src="https://github.com/user-attachments/assets/c998adf0-796c-40c6-ab64-989b2fdd2ac0" />
+
 
 **Fix (apa yang diubah):**
 Menambahkan query update status cleaner pada proses konfirmasi dan penyelesaian pesanan sehingga status berubah secara otomatis.
+<img width="1600" height="638" alt="image" src="https://github.com/user-attachments/assets/d5c64606-2a61-4df3-82f0-40eac1a826ad" />
+
 
 **Bukti:**
 Data cleaner tersimpan pada tabel `cleaners`, namun tidak ditemukan mekanisme sinkronisasi otomatis dengan status pesanan.
@@ -155,28 +163,6 @@ Pada `package_api.php`, proses penambahan paket hanya dijalankan jika action ber
 
 ---
 
-## Bug 4 — Konfirmasi Pembayaran Tidak Tersedia
-
-**Gejala:**
-Admin tidak dapat melakukan konfirmasi pembayaran pelanggan setelah pesanan dibuat.
-
-**Langkah Reproduksi:**
-
-1. Customer membuat pesanan.
-2. Admin membuka dashboard pesanan.
-3. Tidak ditemukan menu atau tombol konfirmasi pembayaran.
-
-**Hipotesis Penyebab:**
-Fitur konfirmasi pembayaran belum diimplementasikan pada backend maupun frontend.
-
-**Fix (apa yang diubah):**
-Menambahkan fitur konfirmasi pembayaran beserta perubahan status pembayaran pada tabel pesanan.
-
-**Bukti:**
-Data pesanan langsung disimpan dengan status pembayaran tertentu tanpa proses verifikasi oleh admin.
-
----
-
 ## Bug 5 — Statistik Pesanan Hari Ini dan Pendapatan Tidak Update
 
 **Gejala:**
@@ -190,35 +176,18 @@ Jumlah pesanan hari ini dan total pendapatan pada dashboard admin tidak berubah 
 
 **Hipotesis Penyebab:**
 Query dashboard tidak menghitung data terbaru atau data hanya diperbarui saat halaman pertama kali dimuat.
+<img width="801" height="36" alt="image" src="https://github.com/user-attachments/assets/ea452002-e00a-4f73-9bb9-ac2941ef68ec" />
+
 
 **Fix (apa yang diubah):**
-Memperbaiki query perhitungan statistik dan menambahkan proses refresh data secara berkala.
+Query diubah agar memfilter berdasarkan kolom DATE(created_at) (yaitu tanggal riil saat pesanan masuk/dibuat di database).
+<img width="1594" height="76" alt="image" src="https://github.com/user-attachments/assets/8b8a5442-5322-4a71-b458-0e07e3b8c366" />
+
 
 **Bukti:**
 `report_api.php` menggunakan query perhitungan pesanan dan pendapatan berdasarkan data transaksi yang tersimpan.
 
 ---
-
-## Bug 6 — Laporan Keuangan Tidak Update
-
-**Gejala:**
-Laporan keuangan bulanan tidak berubah meskipun terdapat transaksi baru yang telah selesai.
-
-**Langkah Reproduksi:**
-
-1. Customer membuat pesanan.
-2. Admin menyelesaikan pesanan.
-3. Buka menu Laporan Keuangan.
-4. Nilai pendapatan tidak bertambah.
-
-**Hipotesis Penyebab:**
-Perhitungan laporan hanya mengambil data dengan status tertentu atau query laporan tidak berjalan dengan benar.
-
-**Fix (apa yang diubah):**
-Memastikan transaksi berstatus "Selesai" masuk ke proses perhitungan laporan dan memperbaiki query agregasi pendapatan.
-
-**Bukti:**
-`report_api.php` menggunakan fungsi `SUM(price)` untuk menghitung pendapatan berdasarkan status pesanan.
 
 # AI Usage Statement
 
