@@ -75,13 +75,14 @@ To use Wecleanit you must've had all this installed and configured:
 - PHP
 - MySQL/MariaDB
 ## Screenshot Aplikasi
-Halaman Login
-<img width="1280" height="734" alt="WhatsApp Image 2026-06-25 at 16 13 19 (2)" src="https://github.com/user-attachments/assets/79128a9b-8f0f-4882-a84b-a7d3d0301a56" />
-Dasbord Admin
-<img width="1280" height="734" alt="WhatsApp Image 2026-06-25 at 16 13 17" src="https://github.com/user-attachments/assets/3dbbeb31-18b9-4dc9-b535-fc1a408748d7" />
-Dasbord Pelanggan
-<img width="1280" height="734" alt="WhatsApp Image 2026-06-25 at 16 13 14" src="https://github.com/user-attachments/assets/538463ea-4cad-4c9c-944a-a32e93978ca5" />
-## Bug Log
+### Halaman Login
+<img width="1280" height="734" alt="WhatsApp Image 2026-06-25 at 16 13 19 (2)" src="https://github.com/user-attachments/assets/c670af7c-359a-44bf-9319-6ef3742b22c2" />
+### Dasbord Admin
+<img width="1280" height="734" alt="WhatsApp Image 2026-06-25 at 16 13 17" src="https://github.com/user-attachments/assets/6ae5178f-d4a7-4e35-91b4-aa90d76be4be" />
+### Dasbord Pelanggan
+![Uploading WhatsApp Image 2026-06-25 at 16.13.14.jpeg…]()
+
+
 # Bug Log
 
 ## Bug 1 — Edit Profil (Upload Foto Profil) Tidak Berhasil
