@@ -253,3 +253,125 @@ Membantu menganalisis source code PHP, MySQL, dan alur sistem WeCleanIt untuk me
 ### Bagian yang saya ubah + alasan:
 
 Hasil analisis AI tidak langsung digunakan seluruhnya. Setiap rekomendasi diperiksa kembali secara manual pada source code WeCleanIt untuk memastikan kesesuaiannya dengan implementasi sistem. Solusi yang digunakan kemudian disesuaikan dengan struktur database, API, dan kebutuhan aplikasi agar perbaikan yang dilakukan benar-benar dapat menyelesaikan bug yang ditemukan.
+
+
+## Cara Menjalankan Project
+---
+# Requirement
+Pastikan perangkat telah menginstal:
+
+PHP 8.0 atau lebih baru
+MySQL / MariaDB
+XAMPP atau Laragon
+Web Browser (Google Chrome, Microsoft Edge, dsb.)
+
+# Langkah-langkah
+1. Clone Repository
+git clone https://github.com/username/wecleanit.git
+cd wecleanit
+
+Atau jika project masih berbentuk folder, cukup pindahkan folder project ke dalam direktori htdocs (XAMPP) atau www (Laragon).
+
+2. Jalankan Web Server
+Buka XAMPP Control Panel
+Aktifkan:
+Apache
+MySQL
+3. Import Database
+Buka browser
+http://localhost/phpmyadmin
+Buat database baru dengan nama
+wecleanit_db
+Pilih database wecleanit_db
+Klik menu Import
+Pilih file
+database.sql
+Klik Go untuk mengimpor database.
+4. Konfigurasi Database
+
+Buka file
+
+koneksi.php
+
+Pastikan konfigurasi sesuai dengan database lokal.
+
+$host     = "localhost";
+$username = "root";
+$password = "";
+$database = "wecleanit_db";
+
+Apabila menggunakan password MySQL, ubah bagian:
+
+$password = "password_mysql";
+5. Jalankan Project
+
+Buka browser dan akses:
+
+http://localhost/wecleanit/
+
+atau
+
+http://localhost/wecleanit/Index.html
+Akun Default
+Role	Nomor WhatsApp	Password
+Admin	081234567890 (sesuaikan isi database)	password
+Customer	Daftar melalui menu Register	Password sesuai saat registrasi
+
+Catatan: Akun admin mengikuti data yang terdapat pada tabel users di database.
+
+Struktur Project
+wecleanit/
+│
+├── Index.html
+├── auth.php
+├── dashboardAdmin.php
+├── dashboardCustomer.php
+├── koneksi.php
+├── uploads/
+│
+├── api/
+│   ├── auth_api.php
+│   ├── cleaner_api.php
+│   ├── customer_api.php
+│   ├── order_api.php
+│   ├── package_api.php
+│   ├── profile_api.php
+│   └── report_api.php
+│
+└── database.sql
+Troubleshooting
+Database gagal terkoneksi
+
+Pastikan:
+
+Apache dan MySQL sudah berjalan.
+Nama database adalah:
+wecleanit_db
+Konfigurasi pada koneksi.php sudah benar.
+Halaman kosong (Blank Page)
+
+Aktifkan error reporting pada PHP.
+
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+Database belum ditemukan
+
+Import kembali file:
+
+database.sql
+
+ke database wecleanit_db.
+
+Login gagal
+
+Pastikan:
+
+Data akun sudah tersedia pada tabel users.
+Password sesuai dengan data yang tersimpan di database.
+Gambar Profil Tidak Muncul
+
+Pastikan folder:
+
+uploads/profiles/
+
+sudah tersedia dan memiliki izin akses (read/write) agar proses upload gambar dapat berjalan dengan baik.
