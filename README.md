@@ -255,123 +255,223 @@ Membantu menganalisis source code PHP, MySQL, dan alur sistem WeCleanIt untuk me
 Hasil analisis AI tidak langsung digunakan seluruhnya. Setiap rekomendasi diperiksa kembali secara manual pada source code WeCleanIt untuk memastikan kesesuaiannya dengan implementasi sistem. Solusi yang digunakan kemudian disesuaikan dengan struktur database, API, dan kebutuhan aplikasi agar perbaikan yang dilakukan benar-benar dapat menyelesaikan bug yang ditemukan.
 
 
-## Cara Menjalankan Project
+# Cara Menjalankan Project
+
+## Requirement
+
+* PHP 8.0 atau lebih baru
+* MySQL / MariaDB
+* XAMPP atau Laragon
+* Web Browser (Chrome, Firefox, Edge)
+* Git (Opsional)
+
 ---
-# Requirement
-Pastikan perangkat telah menginstal:
 
-PHP 8.0 atau lebih baru
-MySQL / MariaDB
-XAMPP atau Laragon
-Web Browser (Google Chrome, Microsoft Edge, dsb.)
+## Langkah-langkah
 
-# Langkah-langkah
-1. Clone Repository
+### 1. Clone Repository
+
+```bash
 git clone https://github.com/username/wecleanit.git
 cd wecleanit
+```
 
-Atau jika project masih berbentuk folder, cukup pindahkan folder project ke dalam direktori htdocs (XAMPP) atau www (Laragon).
+Atau ekstrak file project ke dalam folder:
 
-2. Jalankan Web Server
-Buka XAMPP Control Panel
-Aktifkan:
-Apache
-MySQL
-3. Import Database
-Buka browser
+```text
+htdocs/wecleanit
+```
+
+jika menggunakan XAMPP.
+
+---
+
+### 2. Jalankan Apache dan MySQL
+
+Buka XAMPP Control Panel kemudian aktifkan:
+
+* Apache
+* MySQL
+
+Pastikan kedua service berjalan tanpa error.
+
+---
+
+### 3. Buat Database
+
+Buka phpMyAdmin melalui:
+
+```text
 http://localhost/phpmyadmin
-Buat database baru dengan nama
+```
+
+Kemudian buat database baru:
+
+```sql
+CREATE DATABASE wecleanit_db;
+```
+
+---
+
+### 4. Import Database
+
+Pilih database:
+
+```text
 wecleanit_db
-Pilih database wecleanit_db
-Klik menu Import
-Pilih file
-database.sql
-Klik Go untuk mengimpor database.
-4. Konfigurasi Database
+```
 
-Buka file
+Kemudian import file SQL yang tersedia pada project.
 
+Misalnya:
+
+```text
+database/wecleanit_db.sql
+```
+
+atau file backup database yang disediakan.
+
+---
+
+### 5. Konfigurasi Koneksi Database
+
+Buka file:
+
+```text
 koneksi.php
+```
 
-Pastikan konfigurasi sesuai dengan database lokal.
+Pastikan konfigurasi sesuai dengan database lokal:
 
+```php
 $host     = "localhost";
 $username = "root";
 $password = "";
 $database = "wecleanit_db";
+```
 
-Apabila menggunakan password MySQL, ubah bagian:
+Sesuaikan apabila menggunakan username atau password database yang berbeda.
 
-$password = "password_mysql";
-5. Jalankan Project
+---
+
+### 6. Simpan Project di Folder Web Server
+
+Jika menggunakan XAMPP:
+
+```text
+C:\xampp\htdocs\wecleanit
+```
+
+Jika menggunakan Laragon:
+
+```text
+C:\laragon\www\wecleanit
+```
+
+---
+
+### 7. Jalankan Aplikasi
 
 Buka browser dan akses:
 
-http://localhost/wecleanit/
+```text
+http://localhost/wecleanit
+```
 
 atau
 
+```text
 http://localhost/wecleanit/Index.html
-Akun Default
-Role	Nomor WhatsApp	Password
-Admin	081234567890 (sesuaikan isi database)	password
-Customer	Daftar melalui menu Register	Password sesuai saat registrasi
+```
 
-Catatan: Akun admin mengikuti data yang terdapat pada tabel users di database.
+sesuai struktur project.
 
-Struktur Project
-wecleanit/
-│
-├── Index.html
-├── auth.php
-├── dashboardAdmin.php
-├── dashboardCustomer.php
-├── koneksi.php
-├── uploads/
-│
-├── api/
-│   ├── auth_api.php
-│   ├── cleaner_api.php
-│   ├── customer_api.php
-│   ├── order_api.php
-│   ├── package_api.php
-│   ├── profile_api.php
-│   └── report_api.php
-│
-└── database.sql
-Troubleshooting
-Database gagal terkoneksi
+---
 
-Pastikan:
+## Akun Default
 
-Apache dan MySQL sudah berjalan.
-Nama database adalah:
-wecleanit_db
-Konfigurasi pada koneksi.php sudah benar.
-Halaman kosong (Blank Page)
+### Admin
 
-Aktifkan error reporting pada PHP.
+```text
+Username : admin
+Password : admin123
+```
 
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-Database belum ditemukan
+### Customer
 
-Import kembali file:
+```text
+Username : customer
+Password : customer123
+```
 
-database.sql
+Catatan: Sesuaikan akun di atas dengan data yang terdapat pada tabel `users` di database.
 
-ke database wecleanit_db.
+---
 
-Login gagal
+## Troubleshooting
 
-Pastikan:
+### MySQL Shutdown Unexpectedly
 
-Data akun sudah tersedia pada tabel users.
-Password sesuai dengan data yang tersimpan di database.
-Gambar Profil Tidak Muncul
+Jika MySQL tidak dapat dijalankan:
 
-Pastikan folder:
+1. Tutup XAMPP.
+2. Backup folder:
 
+```text
+xampp/mysql/data
+```
+
+3. Salin isi folder:
+
+```text
+xampp/mysql/backup
+```
+
+ke folder:
+
+```text
+xampp/mysql/data
+```
+
+4. Jalankan kembali MySQL.
+
+---
+
+### Error Koneksi Database
+
+Jika muncul pesan:
+
+```text
+Koneksi ke database gagal
+```
+
+Periksa:
+
+* Apache aktif
+* MySQL aktif
+* Database `wecleanit_db` sudah dibuat
+* Konfigurasi pada `koneksi.php` sudah benar
+
+---
+
+### Gambar Profil Tidak Muncul
+
+Pastikan folder upload tersedia:
+
+```text
 uploads/profiles/
+```
 
-sudah tersedia dan memiliki izin akses (read/write) agar proses upload gambar dapat berjalan dengan baik.
+dan memiliki izin akses untuk menyimpan file.
+
+---
+
+### Data Dashboard Tidak Update
+
+Periksa:
+
+* Data pesanan pada tabel `orders`
+* Data paket pada tabel `packages`
+* Status transaksi sudah berubah menjadi `Selesai`
+
+karena laporan pendapatan dan statistik dashboard mengambil data dari tabel tersebut.
