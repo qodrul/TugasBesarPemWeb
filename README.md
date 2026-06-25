@@ -4,6 +4,10 @@
 WeCleanIt merupakan platform aplikasi web penyedia layanan jasa kebersihan yang dirancang khusus untuk area Mataram dan sekitarnya. Target utamanya adalah mahasiswa, karyawan, dan rumah tangga yang menyewa kosan dan membutuhkan layanan kebersihan (sapu, pel, sikat kamar mandi, dll) secara praktis, transparan, dan terpercaya.
 
 Sistem ini mengubah cara tradisional (pesan manual lewat chat yang rentan miskomunikasi) menjadi sistem pemesanan mandiri (sistem booking otomatis) yang rapi, baik untuk pelanggan maupun pengelola bisnis (Admin).
+## Team Roles & Responsibilities
+Ketua: Mika Khairan Djubikit (Front End)
+Anggota 1: Wimar Aryasmarta Prakasa (Front End)
+Anggota 2: Muhamad Syahril Qodrul Irpan (Front End)
 ## Alamat
 [http://localhost]
 
@@ -68,4 +72,4 @@ HTML, PHP, CSS, Javascript, Tailwind, MySQL
 To use Wecleanit you must've had all this installed and configured:
 - PHP
 - MySQL/MariaDB
-
+## Screenshot Aplikasi
