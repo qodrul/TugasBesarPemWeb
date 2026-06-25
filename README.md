@@ -222,7 +222,7 @@ Memastikan transaksi berstatus "Selesai" masuk ke proses perhitungan laporan dan
 
 # AI Usage Statement
 
-**Tool:** ChatGPT (OpenAI) dalam mode chat.
+**Tool:** Claude (Anthropic) dalam mode chat.
 
 **Untuk apa:**
 Membantu menganalisis source code PHP, MySQL, dan alur sistem WeCleanIt untuk menemukan penyebab bug serta memberikan rekomendasi perbaikan pada fitur yang mengalami masalah.
