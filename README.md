@@ -139,31 +139,7 @@ Data cleaner tersimpan pada tabel `cleaners`, namun tidak ditemukan mekanisme si
 
 ---
 
-## Bug 3 — Tombol Tambah Paket Tidak Berfungsi
-
-**Gejala:**
-Admin menekan tombol "Tambah Paket", tetapi data paket baru tidak tersimpan ke database.
-
-**Langkah Reproduksi:**
-
-1. Login sebagai admin.
-2. Buka menu Kelola Paket.
-3. Isi data paket.
-4. Klik tombol Tambah Paket.
-5. Tidak ada perubahan pada daftar paket.
-
-**Hipotesis Penyebab:**
-Request dari frontend tidak mengirim parameter `action=add_package` atau event tombol tidak terhubung dengan API yang benar.
-
-**Fix (apa yang diubah):**
-Memastikan tombol memanggil endpoint `package_api.php` dengan action `add_package` dan seluruh field terkirim dengan benar.
-
-**Bukti:**
-Pada `package_api.php`, proses penambahan paket hanya dijalankan jika action bernilai `add_package`.
-
----
-
-## Bug 5 — Statistik Pesanan Hari Ini dan Pendapatan Tidak Update
+## Bug 3 — Statistik Pesanan Hari Ini dan Pendapatan Tidak Update
 
 **Gejala:**
 Jumlah pesanan hari ini dan total pendapatan pada dashboard admin tidak berubah meskipun terdapat pesanan baru.
