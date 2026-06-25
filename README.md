@@ -75,11 +75,11 @@ To use Wecleanit you must've had all this installed and configured:
 - PHP
 - MySQL/MariaDB
 ## Screenshot Aplikasi
-### Halaman Login
+**Halaman Login**
 <img width="1280" height="734" alt="WhatsApp Image 2026-06-25 at 16 13 14" src="https://github.com/user-attachments/assets/3336e7f7-5013-496e-abad-cebad3b3ab65" />
-### Dasbord Admin
+**Dasbord Admin**
 <img width="1280" height="734" alt="WhatsApp Image 2026-06-25 at 16 13 17" src="https://github.com/user-attachments/assets/6ae5178f-d4a7-4e35-91b4-aa90d76be4be" />
-### Dasbord Pelanggan
+**Dasbord Pelanggan**
 <img width="1280" height="734" alt="WhatsApp Image 2026-06-25 at 16 13 19 (2)" src="https://github.com/user-attachments/assets/c670af7c-359a-44bf-9319-6ef3742b22c2" />
 
 # Bug Log
